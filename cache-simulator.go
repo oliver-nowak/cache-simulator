@@ -10,6 +10,8 @@ var main_memory = make([]uint16, 2048)
 // cache - 2d array composed of 16 blocks (16 bytes per block)
 var cache = make([][]uint16, 16)
 
+var exit_requested = false
+
 const (
 	BLOCK_OFFSET_MASK uint16 = 0x000F
 	SLOT_OFFSET_MASK  uint16 = 0x00F0 // >> 1
@@ -39,21 +41,54 @@ func main() {
 		mem_val = (mem_val + 1) % max
 		main_memory[i] = uint16(mem_val)
 
-		fmt.Printf(">> %X \n", main_memory[i])
+		// fmt.Printf(">> %X \n", main_memory[i])
 	}
 
 	// assert 0x7FF = 0xFF
-	fmt.Printf("++ %X \n", main_memory[0x07FF])
+	// fmt.Printf("++ %X \n", main_memory[0x07FF])
 
-	displayCache()
+	// displayCache()
+
+	// User Input loop
+	for !exit_requested {
+		displayMenu()
+		getInput()
+	}
+}
+
+func displayMenu() {
+	fmt.Println("")
+	fmt.Println("")
+	fmt.Printf("(R)ead, (W)rite, (D)isplay Cache, (Q)uit? ")
 }
 
 func displayCache() {
+	fmt.Println("==========================================================================")
+	fmt.Println("================================C A C H E ================================")
 	fmt.Println("Slot  Valid   Tag    Data")
 
 	for entry := range cache {
 		row := cache[entry]
 
-		fmt.Printf("%2.1X     %2.1d     %2.1X     %X \n", row[SLOT], row[VALID], row[TAG], row[DATA:])
+		fmt.Printf("%2.1X     %2.1d     %2.1X     %2.2X \n", row[SLOT], row[VALID], row[TAG], row[DATA:])
+	}
+
+}
+
+func getInput() {
+	var input string
+	fmt.Scanf("%s", &input)
+
+	switch input {
+	case "d", "D":
+		displayCache()
+		break
+	case "r", "R":
+		break
+	case "q", "Q":
+		exit_requested = true
+		break
+	case "w", "W":
+		break
 	}
 }
