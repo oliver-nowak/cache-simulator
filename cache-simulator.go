@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"strconv"
 )
 
 // contiguous memory
@@ -15,11 +17,11 @@ var exit_requested = false
 const (
 	BLOCK_OFFSET_MASK uint16 = 0x000F
 	SLOT_OFFSET_MASK  uint16 = 0x00F0 // >> 1
-	TAG_OFFSET_MASK   uint16 = 0xFF00 // >> 2
-	SLOT              uint16 = 0
-	VALID             uint16 = 1
-	TAG               uint16 = 2
-	DATA              uint16 = 3
+	// TAG_OFFSET_MASK   uint16 = 0xFF00 // >> 2
+	SLOT  uint16 = 0
+	VALID uint16 = 1
+	TAG   uint16 = 2
+	DATA  uint16 = 3
 )
 
 func main() {
@@ -52,7 +54,7 @@ func main() {
 	// User Input loop
 	for !exit_requested {
 		displayMenu()
-		getInput()
+		getMenuInput()
 	}
 }
 
@@ -72,10 +74,40 @@ func displayCache() {
 
 		fmt.Printf("%2.1X     %2.1d     %2.1X     %2.2X \n", row[SLOT], row[VALID], row[TAG], row[DATA:])
 	}
-
 }
 
-func getInput() {
+func readData() {
+	// Get user input
+	var input string
+	fmt.Print("What address would you like to read? ")
+	fmt.Scanln(&input)
+
+	// convert to main_memory index
+	var idx, err = strconv.ParseInt(input, 16, 16)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Reading Main_Memory[%d] \n", idx)
+
+	// get the data at that location
+	var mem uint16 = main_memory[idx]
+	fmt.Printf("Data: [%4.4X] \n", mem)
+
+	var block uint16 = mem & BLOCK_OFFSET_MASK
+	var slot uint16 = (mem & SLOT_OFFSET_MASK) >> 4
+	var tag uint16 = mem >> 8
+
+	fmt.Printf("Tag: [%2.2X]    Slot: [%X]   Block: [%X] \n", tag, slot, block)
+
+	// check if its in the cache
+
+	// read the entire data block if its not in the cache
+
+	fmt.Printf("At that byte there is the value %2.2X \n", mem)
+}
+
+func getMenuInput() {
 	var input string
 	fmt.Scanf("%s", &input)
 
@@ -84,6 +116,7 @@ func getInput() {
 		displayCache()
 		break
 	case "r", "R":
+		readData()
 		break
 	case "q", "Q":
 		exit_requested = true
