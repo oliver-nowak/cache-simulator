@@ -76,7 +76,6 @@ func displayCache() {
 }
 
 func checkCache(tag byte, slot byte, block byte) bool {
-	// check if its in the cache
 	// TODO: implement complete dump for Cache MISS
 	// TODO: implement write to memory
 	var cache_line = cache[int(slot)]
@@ -154,9 +153,21 @@ func writeData() {
 	fmt.Println(data_to_write)
 
 	// check the cache to see if we already have it
+	var addr = uint16(addr_to_write)
+	var block byte = byte(addr & 0x000F)
+	var slot byte = byte((addr & 0x00F0) >> 4)
+	var tag byte = byte(addr >> 8)
+	fmt.Printf("Tag: [%2.2X]    Slot: [%X]   Block: [%X] \n", tag, slot, block)
 
-	// already in Cache? write data to cache, and flush to main_memory
-	// not in Cache? pull data from main_memory, write data to cache, and flush back to main_memory
+	if checkCache(tag, slot, block) {
+		// IN THE CACHE
+		fmt.Println("Cache HIT")
+		// TODO: already in Cache? write data to cache, and flush to main_memory
+	} else {
+		// NOT IN THE CACHE
+		fmt.Println("Cache MISS")
+		// TODO: not in Cache? pull data from main_memory, write data to cache, and flush back to main_memory
+	}
 }
 
 func getMenuInput() {
@@ -174,6 +185,7 @@ func getMenuInput() {
 		exit_requested = true
 		break
 	case "w", "W":
+		writeData()
 		break
 	}
 }
