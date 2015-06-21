@@ -87,37 +87,30 @@ func readData() {
 		log.Fatal(err)
 	}
 	var addr = uint16(idx)
-
 	var block byte = byte(addr & 0x000F)
 	var slot byte = byte((addr & 0x00F0) >> 4)
 	var tag byte = byte(addr >> 8)
 	fmt.Printf("Tag: [%2.2X]    Slot: [%X]   Block: [%X] \n", tag, slot, block)
 
-	fmt.Printf("Reading Main_Memory[%d] \n", idx)
-
-	// get the data at that location
-	var mem byte = main_memory[idx]
-	fmt.Printf("Data: [%4.4X] \n", mem)
-
-	fmt.Printf("At that byte there is the value %2.2X \n", mem)
-
 	// check if its in the cache
-	// TODO: implement cache check
+	// TODO: implement complete dump for Cache MISS
+	// TODO: implement write to memory
+	var cache_line = cache[int(slot)]
+	var line_slot = cache_line[SLOT]
+	var line_tag = cache_line[TAG]
+	var line_valid = cache_line[VALID]
+	var line_data = make([]byte, 16)
 
-	// read the entire data block if its not in the cache
-	var addr_begin = idx - int64(block)
-	var addr_end = addr_begin + 16
-	var data_block = make([]byte, 16)
-	data_block = main_memory[addr_begin:addr_end]
-
-	fmt.Printf("Data retrieved: %X \n", data_block[:])
-
-	// write it to the cache
-	var slot_idx = int(slot)
-	var cache_row = cache[slot_idx]
-	cache_row[VALID] = 0x01
-	cache_row[TAG] = tag
-	copy(cache_row[DATA:], data_block[:])
+	if line_slot == slot && line_tag == tag && line_valid == 1 {
+		// IN THE CACHE
+		fmt.Println("Cache HIT")
+		copy(line_data[:], cache_line[DATA:])
+		fmt.Printf("Cache data COPIED: [%X] \n", line_data)
+	} else {
+		// NOT IN THE CACHE
+		fmt.Printf("Cache MISS: line contains slot[%X] tag[%X] \n", line_slot, line_tag)
+		readAndCacheData(idx, tag, slot, block)
+	}
 }
 
 func getMenuInput() {
@@ -137,4 +130,29 @@ func getMenuInput() {
 	case "w", "W":
 		break
 	}
+}
+
+func readAndCacheData(idx int64, tag byte, slot byte, block byte) {
+	// NOT IN THE CACHE
+	// get the data at that location
+	var mem byte = main_memory[idx]
+	fmt.Printf("Reading Main_Memory[%d] \n", idx)
+	fmt.Printf("Data: [%4.4X] \n", mem)
+
+	fmt.Printf("At that byte there is the value %2.2X \n", mem)
+
+	// read the entire data block
+	var addr_begin = idx - int64(block)
+	var addr_end = addr_begin + 16
+	var data_block = make([]byte, 16)
+	data_block = main_memory[addr_begin:addr_end]
+
+	fmt.Printf("Data retrieved: %X \n", data_block[:])
+
+	// write it to the cache
+	var slot_idx = int(slot)
+	var cache_row = cache[slot_idx]
+	cache_row[VALID] = 0x01
+	cache_row[TAG] = tag
+	copy(cache_row[DATA:], data_block[:])
 }
