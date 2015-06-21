@@ -75,23 +75,7 @@ func displayCache() {
 	}
 }
 
-func readData() {
-	// Get user input
-	var input string
-	fmt.Print("What address would you like to read? ")
-	fmt.Scanln(&input)
-
-	// convert to main_memory index
-	var idx, err = strconv.ParseInt(input, 16, 16)
-	if err != nil {
-		log.Fatal(err)
-	}
-	var addr = uint16(idx)
-	var block byte = byte(addr & 0x000F)
-	var slot byte = byte((addr & 0x00F0) >> 4)
-	var tag byte = byte(addr >> 8)
-	fmt.Printf("Tag: [%2.2X]    Slot: [%X]   Block: [%X] \n", tag, slot, block)
-
+func checkCache(tag byte, slot byte, block byte) bool {
 	// check if its in the cache
 	// TODO: implement complete dump for Cache MISS
 	// TODO: implement write to memory
@@ -101,16 +85,78 @@ func readData() {
 	var line_valid = cache_line[VALID]
 	var line_data = make([]byte, 16)
 
+	fmt.Printf("Cache line contains slot[%X] tag[%X] \n", line_slot, line_tag)
+
 	if line_slot == slot && line_tag == tag && line_valid == 1 {
+		copy(line_data[:], cache_line[DATA:])
+		fmt.Printf("Cache line COPIED: [%X] \n", line_data)
+		return true
+	}
+
+	return false
+}
+
+func readData() {
+	// Get user input
+	// TODO: validate input length
+	var input string
+	fmt.Print("What address would you like to read? ")
+	fmt.Scanln(&input)
+
+	// convert to main_memory index
+	var idx, err = strconv.ParseInt(input, 16, 16)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var addr = uint16(idx)
+	var block byte = byte(addr & 0x000F)
+	var slot byte = byte((addr & 0x00F0) >> 4)
+	var tag byte = byte(addr >> 8)
+	fmt.Printf("Tag: [%2.2X]    Slot: [%X]   Block: [%X] \n", tag, slot, block)
+
+	if checkCache(tag, slot, block) {
 		// IN THE CACHE
 		fmt.Println("Cache HIT")
-		copy(line_data[:], cache_line[DATA:])
-		fmt.Printf("Cache data COPIED: [%X] \n", line_data)
 	} else {
 		// NOT IN THE CACHE
-		fmt.Printf("Cache MISS: line contains slot[%X] tag[%X] \n", line_slot, line_tag)
+		fmt.Println("Cache MISS")
 		readAndCacheData(idx, tag, slot, block)
 	}
+}
+
+func writeData() {
+	// Get user input
+	// TODO: validate input length
+
+	/////// GET ADDRESS TO WRITE
+	var addr_requested string
+	fmt.Print("What address would you like to write to? ")
+	fmt.Scanln(&addr_requested)
+
+	// convert to main_memory index
+	var addr_to_write, err_addr = strconv.ParseInt(addr_requested, 16, 16)
+	if err_addr != nil {
+		log.Fatal(err_addr)
+	}
+	fmt.Println(addr_to_write)
+
+	//////// GET DATA TO WRITE
+	var data_requested string
+	fmt.Print("What data would you like to write at that address? ")
+	fmt.Scanln(&data_requested)
+
+	// convert to main_memory index
+	var data_to_write, err_data = strconv.ParseInt(data_requested, 16, 16)
+	if err_data != nil {
+		log.Fatal(err_data)
+	}
+	fmt.Println(data_to_write)
+
+	// check the cache to see if we already have it
+
+	// already in Cache? write data to cache, and flush to main_memory
+	// not in Cache? pull data from main_memory, write data to cache, and flush back to main_memory
 }
 
 func getMenuInput() {
