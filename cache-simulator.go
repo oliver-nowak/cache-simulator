@@ -86,6 +86,12 @@ func readData() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	var addr = uint16(idx)
+
+	var block byte = byte(addr & 0x000F)
+	var slot byte = byte((addr & 0x00F0) >> 4)
+	var tag byte = byte(addr >> 8)
+	fmt.Printf("Tag: [%2.2X]    Slot: [%X]   Block: [%X] \n", tag, slot, block)
 
 	fmt.Printf("Reading Main_Memory[%d] \n", idx)
 
@@ -93,11 +99,6 @@ func readData() {
 	var mem byte = main_memory[idx]
 	fmt.Printf("Data: [%4.4X] \n", mem)
 
-	var block byte = mem & 0x0F
-	var slot byte = (mem & 0xF0) >> 4
-	var tag byte = mem >> 8
-
-	fmt.Printf("Tag: [%2.2X]    Slot: [%X]   Block: [%X] \n", tag, slot, block)
 	fmt.Printf("At that byte there is the value %2.2X \n", mem)
 
 	// check if its in the cache
