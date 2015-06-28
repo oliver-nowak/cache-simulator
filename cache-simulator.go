@@ -172,14 +172,12 @@ func writeData() {
 		updateCache(slot, block, data_to_write)
 
 		// flush cache to main memory
-		// TODO: flush the whole 16byte block, or just the updated bytes ?
-		fmt.Printf("Main Memory Data (pre-flush): Address (int) [%d] Data (hex) [%X] \n", addr_to_write, main_memory[addr_to_write])
-		main_memory[addr_to_write] = byte(data_to_write)
-		fmt.Printf("Main Memory Data (post-flush): Address (int) [%d] Data (hex) [%X] \n", addr_to_write, main_memory[addr_to_write])
+		writeToMainMemory(addr_to_write, byte(data_to_write))
 	} else {
 		// NOT IN THE CACHE
 		fmt.Println("Cache MISS")
 		// readAndCacheData(addr_to_write, tag, slot, block)
+		// updateCache(slot, block, data_to_write)
 
 		// TODO: not in Cache? pull data from main_memory, write data to cache, update cache with new value, and flush back to main_memory
 	}
@@ -246,4 +244,11 @@ func writeToCache(tag byte, slot byte, data_block []byte) {
 	cache_row[VALID] = 0x01
 	cache_row[TAG] = tag
 	copy(cache_row[DATA_OFFSET:], data_block[:])
+}
+
+func writeToMainMemory(addr_to_write int64, data_to_write byte) {
+	// TODO: flush the whole 16byte block, or just the updated bytes ?
+	fmt.Printf("Main Memory Data (pre-flush): Address (int) [%d] Data (hex) [%X] \n", addr_to_write, main_memory[addr_to_write])
+	main_memory[addr_to_write] = data_to_write
+	fmt.Printf("Main Memory Data (post-flush): Address (int) [%d] Data (hex) [%X] \n", addr_to_write, main_memory[addr_to_write])
 }
