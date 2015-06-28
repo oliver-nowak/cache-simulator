@@ -17,16 +17,17 @@ var exit_requested = false
 const (
 	// BLOCK_OFFSET_MASK uint16 = 0x000F
 	// SLOT_OFFSET_MASK  uint16 = 0x00F0
-	SLOT    uint16 = 0
-	VALID   uint16 = 1
-	TAG     uint16 = 2
-	DATA    uint16 = 3
-	DATA_B2 uint16 = 5
-	DATA_B4 uint16 = 7
-	DATA_B6 uint16 = 9
-	DATA_B8 uint16 = 11
-	DATA_BA uint16 = 13
-	DATA_BC uint16 = 15
+	SLOT          uint16 = 0
+	VALID         uint16 = 1
+	TAG           uint16 = 2
+	DATA_OFFSET   uint16 = 3
+	DATA_B2       uint16 = 5
+	DATA_B4       uint16 = 7
+	DATA_B6       uint16 = 9
+	DATA_B8       uint16 = 11
+	DATA_BA       uint16 = 13
+	DATA_BC       uint16 = 15
+	DATA_BOUNDARY uint16 = 19
 )
 
 func main() {
@@ -88,7 +89,7 @@ func checkCache(tag byte, slot byte, block byte) bool {
 	fmt.Printf("Requested Cache line contains slot[%X] tag[%X] \n", line_slot, line_tag)
 
 	if line_slot == slot && line_tag == tag && line_valid == 1 {
-		copy(line_data[:], cache_line[DATA:])
+		copy(line_data[:], cache_line[DATA_OFFSET:])
 		fmt.Printf("Cache line COPIED: [%X] \n", line_data)
 		return true
 	}
@@ -160,17 +161,34 @@ func writeData() {
 		log.Fatal(err_data)
 	}
 	fmt.Println(data_to_write)
-	var data_addr = uint16(data_to_write)
-	var data_block byte = byte(data_addr & 0x000F)
-	var data_slot byte = byte((data_addr & 0x00F0) >> 4)
-	var data_tag byte = byte(data_addr >> 8)
-	fmt.Printf("Data to write ==> Tag: [%2.2X]    Slot: [%X]    Block: [%X] \n", data_tag, data_slot, data_block)
+	fmt.Printf("Data to write: [%2.2X] \n", data_to_write)
+	// var data_addr = uint16(data_to_write)
+	// var data_block byte = byte(data_addr & 0x000F)
+	// var data_slot byte = byte((data_addr & 0x00F0) >> 4)
+	// var data_tag byte = byte(data_addr >> 8)
+	// fmt.Printf("Data to write ==> Block: [%2.2X] \n", data_block)
 	//////////////////////////////////////////////////////
 
 	if checkCache(tag, slot, block) {
 		// IN THE CACHE
 		fmt.Println("Cache HIT")
 		// TODO: already in Cache? write data to cache, and flush to main_memory
+
+		// write updated value to cache
+		var slot_idx = int(slot)
+		var cache_row = cache[slot_idx]
+
+		fmt.Printf("Cache line retrieved: [%X] \n", cache_row[DATA_OFFSET:DATA_BOUNDARY])
+		fmt.Printf("Cache block to write to (hex): [%X] \n", block)
+		fmt.Printf("Cache block to write to (int): [%d] \n", block)
+
+		var cache_block_to_write = DATA_OFFSET + uint16(block)
+		cache_row[cache_block_to_write] = byte(data_to_write)
+
+		fmt.Printf("Cache line updated: [%X] \n", cache_row[DATA_OFFSET:DATA_BOUNDARY])
+
+		// flush cache to main memory
+
 	} else {
 		// NOT IN THE CACHE
 		fmt.Println("Cache MISS")
@@ -224,5 +242,5 @@ func writeToCache(tag byte, slot byte, data_block []byte) {
 	var cache_row = cache[slot_idx]
 	cache_row[VALID] = 0x01
 	cache_row[TAG] = tag
-	copy(cache_row[DATA:], data_block[:])
+	copy(cache_row[DATA_OFFSET:], data_block[:])
 }
