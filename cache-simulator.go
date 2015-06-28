@@ -176,10 +176,9 @@ func writeData() {
 	} else {
 		// NOT IN THE CACHE
 		fmt.Println("Cache MISS")
-		// readAndCacheData(addr_to_write, tag, slot, block)
-		// updateCache(slot, block, data_to_write)
-
-		// TODO: not in Cache? pull data from main_memory, write data to cache, update cache with new value, and flush back to main_memory
+		readAndCacheData(addr_to_write, tag, slot, block)
+		updateCache(slot, block, data_to_write)
+		writeToMainMemory(addr_to_write, byte(data_to_write))
 	}
 }
 
