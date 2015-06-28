@@ -7,7 +7,7 @@ import (
 )
 
 // contiguous memory
-var main_memory = make([]byte, 2048)
+var main_memory = make([]byte, MAX_MEMORY)
 
 // cache - 2d array composed of 16 blocks (16 bytes per block)
 var cache = make([][]byte, 16)
@@ -15,8 +15,6 @@ var cache = make([][]byte, 16)
 var exit_requested = false
 
 const (
-	// BLOCK_OFFSET_MASK uint16 = 0x000F
-	// SLOT_OFFSET_MASK  uint16 = 0x00F0
 	SLOT          uint16 = 0
 	VALID         uint16 = 1
 	TAG           uint16 = 2
@@ -28,6 +26,7 @@ const (
 	DATA_BA       uint16 = 13
 	DATA_BC       uint16 = 15
 	DATA_BOUNDARY uint16 = 19
+	MAX_MEMORY    int    = 2048
 )
 
 func main() {
@@ -83,12 +82,10 @@ func checkCache(tag byte, slot byte, block byte) bool {
 	var line_slot = cache_line[SLOT]
 	var line_tag = cache_line[TAG]
 	var line_valid = cache_line[VALID]
-	// var line_data = make([]byte, 16)
 
 	fmt.Printf("Requested Cache line contains slot[%X] tag[%X] \n", line_slot, line_tag)
 
 	if line_slot == slot && line_tag == tag && line_valid == 1 {
-		// copy(line_data[:], cache_line[DATA_OFFSET:])
 		fmt.Printf("Cache line looks like: [%X] \n", cache_line[DATA_OFFSET:])
 		return true
 	}
@@ -98,10 +95,11 @@ func checkCache(tag byte, slot byte, block byte) bool {
 
 func readData() {
 	// Get user input
-	// TODO: validate input length
 	var input string
 	fmt.Print("What address would you like to read? ")
 	fmt.Scanln(&input)
+
+	checkInputLength(input)
 
 	// convert to main_memory index
 	var idx, err = strconv.ParseInt(input, 16, 16)
@@ -118,7 +116,7 @@ func readData() {
 	if checkCache(tag, slot, block) {
 		// IN THE CACHE
 		fmt.Println("Cache HIT")
-		// TODO: read value out of cache
+		// TODO: read value out of cache ?
 	} else {
 		// NOT IN THE CACHE
 		fmt.Println("Cache MISS")
@@ -128,12 +126,13 @@ func readData() {
 
 func writeData() {
 	// Get user input
-	// TODO: validate input length
 
 	/////// GET ADDRESS TO WRITE
 	var addr_requested string
 	fmt.Print("What address would you like to write to? ")
 	fmt.Scanln(&addr_requested)
+
+	checkInputLength(addr_requested)
 
 	//////////////////////// ADDRESS REQUESTED //////////
 	// convert to main_memory index
@@ -154,6 +153,8 @@ func writeData() {
 	var data_requested string
 	fmt.Print("What data would you like to write at that address? ")
 	fmt.Scanln(&data_requested)
+
+	checkInputLength(data_requested)
 
 	// convert to main_memory index
 	var data_to_write, err_data = strconv.ParseInt(data_requested, 16, 16)
@@ -199,6 +200,13 @@ func getMenuInput() {
 	case "w", "W":
 		writeData()
 		break
+	}
+}
+
+func checkInputLength(input string) {
+	var input_length = len(input)
+	if input_length < 1 || input_length > 4 {
+		log.Fatalf("Input length of [%d] not valid. Please input an address between 1 - 4 chars.", len(input))
 	}
 }
 
