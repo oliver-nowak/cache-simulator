@@ -76,6 +76,7 @@ func displayCache() {
 }
 
 func checkCache(tag byte, slot byte, block byte) bool {
+	fmt.Println("Checking cache...")
 	// TODO: implement complete dump for Cache MISS
 	// TODO: implement write to memory
 	var cache_line = cache[int(slot)]
@@ -84,7 +85,7 @@ func checkCache(tag byte, slot byte, block byte) bool {
 	var line_valid = cache_line[VALID]
 	var line_data = make([]byte, 16)
 
-	fmt.Printf("Cache line contains slot[%X] tag[%X] \n", line_slot, line_tag)
+	fmt.Printf("Requested Cache line contains slot[%X] tag[%X] \n", line_slot, line_tag)
 
 	if line_slot == slot && line_tag == tag && line_valid == 1 {
 		copy(line_data[:], cache_line[DATA:])
@@ -112,7 +113,7 @@ func readData() {
 	var block byte = byte(addr & 0x000F)
 	var slot byte = byte((addr & 0x00F0) >> 4)
 	var tag byte = byte(addr >> 8)
-	fmt.Printf("Tag: [%2.2X]    Slot: [%X]   Block: [%X] \n", tag, slot, block)
+	fmt.Printf("Data to read ==> Tag: [%2.2X]    Slot: [%X]   Block: [%X] \n", tag, slot, block)
 
 	if checkCache(tag, slot, block) {
 		// IN THE CACHE
@@ -133,14 +134,22 @@ func writeData() {
 	fmt.Print("What address would you like to write to? ")
 	fmt.Scanln(&addr_requested)
 
+	//////////////////////// ADDRESS REQUESTED //////////
 	// convert to main_memory index
 	var addr_to_write, err_addr = strconv.ParseInt(addr_requested, 16, 16)
 	if err_addr != nil {
 		log.Fatal(err_addr)
 	}
 	fmt.Println(addr_to_write)
+	// check the cache to see if we already have it
+	var addr = uint16(addr_to_write)
+	var block byte = byte(addr & 0x000F)
+	var slot byte = byte((addr & 0x00F0) >> 4)
+	var tag byte = byte(addr >> 8)
+	fmt.Printf("Cache line to check ==> Tag: [%2.2X]    Slot: [%X]   Block: [%X] \n", tag, slot, block)
+	////////////////////////////////////////////////////
 
-	//////// GET DATA TO WRITE
+	//////// DATA REQUESTED
 	var data_requested string
 	fmt.Print("What data would you like to write at that address? ")
 	fmt.Scanln(&data_requested)
@@ -151,13 +160,12 @@ func writeData() {
 		log.Fatal(err_data)
 	}
 	fmt.Println(data_to_write)
-
-	// check the cache to see if we already have it
-	var addr = uint16(addr_to_write)
-	var block byte = byte(addr & 0x000F)
-	var slot byte = byte((addr & 0x00F0) >> 4)
-	var tag byte = byte(addr >> 8)
-	fmt.Printf("Tag: [%2.2X]    Slot: [%X]   Block: [%X] \n", tag, slot, block)
+	var data_addr = uint16(data_to_write)
+	var data_block byte = byte(data_addr & 0x000F)
+	var data_slot byte = byte((data_addr & 0x00F0) >> 4)
+	var data_tag byte = byte(data_addr >> 8)
+	fmt.Printf("Data to write ==> Tag: [%2.2X]    Slot: [%X]    Block: [%X] \n", data_tag, data_slot, data_block)
+	//////////////////////////////////////////////////////
 
 	if checkCache(tag, slot, block) {
 		// IN THE CACHE
@@ -208,6 +216,10 @@ func readAndCacheData(idx int64, tag byte, slot byte, block byte) {
 	fmt.Printf("Data retrieved: %X \n", data_block[:])
 
 	// write it to the cache
+	writeToCache(tag, slot, data_block)
+}
+
+func writeToCache(tag byte, slot byte, data_block []byte) {
 	var slot_idx = int(slot)
 	var cache_row = cache[slot_idx]
 	cache_row[VALID] = 0x01
