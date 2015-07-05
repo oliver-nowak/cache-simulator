@@ -1,0 +1,306 @@
+ashpool::cache-simulator$ go run cache-simulator.go                                                                                                               (git)-[master]
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 5
+Tag: [00]    Slot: [0]   Block: [5]
+Checking cache...
+Cache MISS
+Reading Main_Memory at address [0x05]
+Data: [0x05]
+Block retrieved: [000102030405060708090A0B0C0D0E0F]
+Written to cache.
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 6
+Tag: [00]    Slot: [0]   Block: [6]
+Checking cache...
+Cache line looks like: [000102030405060708090A0B0C0D0E0F]
+Cache HIT
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 7
+Tag: [00]    Slot: [0]   Block: [7]
+Checking cache...
+Cache line looks like: [000102030405060708090A0B0C0D0E0F]
+Cache HIT
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 14c
+Tag: [01]    Slot: [4]   Block: [C]
+Checking cache...
+Cache MISS
+Reading Main_Memory at address [0x14C]
+Data: [0x4C]
+Block retrieved: [404142434445464748494A4B4C4D4E4F]
+Written to cache.
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 14d
+Tag: [01]    Slot: [4]   Block: [D]
+Checking cache...
+Cache line looks like: [404142434445464748494A4B4C4D4E4F]
+Cache HIT
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 14e
+Tag: [01]    Slot: [4]   Block: [E]
+Checking cache...
+Cache line looks like: [404142434445464748494A4B4C4D4E4F]
+Cache HIT
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 14f
+Tag: [01]    Slot: [4]   Block: [F]
+Checking cache...
+Cache line looks like: [404142434445464748494A4B4C4D4E4F]
+Cache HIT
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 150
+Tag: [01]    Slot: [5]   Block: [0]
+Checking cache...
+Cache MISS
+Reading Main_Memory at address [0x150]
+Data: [0x50]
+Block retrieved: [505152535455565758595A5B5C5D5E5F]
+Written to cache.
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 151
+Tag: [01]    Slot: [5]   Block: [1]
+Checking cache...
+Cache line looks like: [505152535455565758595A5B5C5D5E5F]
+Cache HIT
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 3a6
+Tag: [03]    Slot: [A]   Block: [6]
+Checking cache...
+Cache MISS
+Reading Main_Memory at address [0x3A6]
+Data: [0xA6]
+Block retrieved: [A0A1A2A3A4A5A6A7A8A9AAABACADAEAF]
+Written to cache.
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 4c3
+Tag: [04]    Slot: [C]   Block: [3]
+Checking cache...
+Cache MISS
+Reading Main_Memory at address [0x4C3]
+Data: [0xC3]
+Block retrieved: [C0C1C2C3C4C5C6C7C8C9CACBCCCDCECF]
+Written to cache.
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? d
+====================================================================================
+================================ C A C H E =========================================
+Slot  Valid   Tag    Data
+ 0      1      0     00  01  02  03  04  05  06  07  08  09  0A  0B  0C  0D  0E  0F
+ 1      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 2      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 3      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 4      1      1     40  41  42  43  44  45  46  47  48  49  4A  4B  4C  4D  4E  4F
+ 5      1      1     50  51  52  53  54  55  56  57  58  59  5A  5B  5C  5D  5E  5F
+ 6      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 7      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 8      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 9      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ A      1      3     A0  A1  A2  A3  A4  A5  A6  A7  A8  A9  AA  AB  AC  AD  AE  AF
+ B      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ C      1      4     C0  C1  C2  C3  C4  C5  C6  C7  C8  C9  CA  CB  CC  CD  CE  CF
+ D      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ E      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ F      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? w
+What address would you like to write to? 14c
+Cache line to check ==> Tag: [01]    Slot: [4]   Block: [C]
+What data would you like to write at that address? 99
+Data to write: [0x99]
+Checking cache...
+Cache line looks like: [404142434445464748494A4B4C4D4E4F]
+Cache HIT
+Cache line retrieved: [404142434445464748494A4B4C4D4E4F]
+Cache block # to write to (hex): [C]
+Cache line updated: [404142434445464748494A4B994D4E4F]
+Preparing to write to Main Memory...
+Dump Main Memory (pre-flush): Address [0x14C] - Data [0x4C]
+Data written to Main Memory.
+Dump Main Memory (post-flush): Address [0x14C] - Data [0x99]
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? w
+What address would you like to write to? 63b
+Cache line to check ==> Tag: [06]    Slot: [3]   Block: [B]
+What data would you like to write at that address? 7
+Data to write: [0x07]
+Checking cache...
+Cache MISS
+Reading Main_Memory at address [0x63B]
+Data: [0x3B]
+Block retrieved: [303132333435363738393A3B3C3D3E3F]
+Written to cache.
+Cache line retrieved: [303132333435363738393A3B3C3D3E3F]
+Cache block # to write to (hex): [B]
+Cache line updated: [303132333435363738393A073C3D3E3F]
+Preparing to write to Main Memory...
+Dump Main Memory (pre-flush): Address [0x63B] - Data [0x3B]
+Data written to Main Memory.
+Dump Main Memory (post-flush): Address [0x63B] - Data [0x7]
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 582
+Tag: [05]    Slot: [8]   Block: [2]
+Checking cache...
+Cache MISS
+Reading Main_Memory at address [0x582]
+Data: [0x82]
+Block retrieved: [808182838485868788898A8B8C8D8E8F]
+Written to cache.
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? d
+====================================================================================
+================================ C A C H E =========================================
+Slot  Valid   Tag    Data
+ 0      1      0     00  01  02  03  04  05  06  07  08  09  0A  0B  0C  0D  0E  0F
+ 1      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 2      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 3      1      6     30  31  32  33  34  35  36  37  38  39  3A  07  3C  3D  3E  3F
+ 4      1      1     40  41  42  43  44  45  46  47  48  49  4A  4B  99  4D  4E  4F
+ 5      1      1     50  51  52  53  54  55  56  57  58  59  5A  5B  5C  5D  5E  5F
+ 6      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 7      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 8      1      5     80  81  82  83  84  85  86  87  88  89  8A  8B  8C  8D  8E  8F
+ 9      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ A      1      3     A0  A1  A2  A3  A4  A5  A6  A7  A8  A9  AA  AB  AC  AD  AE  AF
+ B      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ C      1      4     C0  C1  C2  C3  C4  C5  C6  C7  C8  C9  CA  CB  CC  CD  CE  CF
+ D      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ E      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ F      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 348
+Tag: [03]    Slot: [4]   Block: [8]
+Checking cache...
+Cache MISS
+Reading Main_Memory at address [0x348]
+Data: [0x48]
+Block retrieved: [404142434445464748494A4B4C4D4E4F]
+Written to cache.
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 3f
+Tag: [00]    Slot: [3]   Block: [F]
+Checking cache...
+Cache MISS
+Reading Main_Memory at address [0x3F]
+Data: [0x3F]
+Block retrieved: [303132333435363738393A3B3C3D3E3F]
+Written to cache.
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? d
+====================================================================================
+================================ C A C H E =========================================
+Slot  Valid   Tag    Data
+ 0      1      0     00  01  02  03  04  05  06  07  08  09  0A  0B  0C  0D  0E  0F
+ 1      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 2      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 3      1      0     30  31  32  33  34  35  36  37  38  39  3A  3B  3C  3D  3E  3F
+ 4      1      3     40  41  42  43  44  45  46  47  48  49  4A  4B  4C  4D  4E  4F
+ 5      1      1     50  51  52  53  54  55  56  57  58  59  5A  5B  5C  5D  5E  5F
+ 6      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 7      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 8      1      5     80  81  82  83  84  85  86  87  88  89  8A  8B  8C  8D  8E  8F
+ 9      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ A      1      3     A0  A1  A2  A3  A4  A5  A6  A7  A8  A9  AA  AB  AC  AD  AE  AF
+ B      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ C      1      4     C0  C1  C2  C3  C4  C5  C6  C7  C8  C9  CA  CB  CC  CD  CE  CF
+ D      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ E      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ F      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 14b
+Tag: [01]    Slot: [4]   Block: [B]
+Checking cache...
+Cache MISS
+Reading Main_Memory at address [0x14B]
+Data: [0x4B]
+Block retrieved: [404142434445464748494A4B994D4E4F]
+Written to cache.
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 14c
+Tag: [01]    Slot: [4]   Block: [C]
+Checking cache...
+Cache line looks like: [404142434445464748494A4B994D4E4F]
+Cache HIT
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 63f
+Tag: [06]    Slot: [3]   Block: [F]
+Checking cache...
+Cache MISS
+Reading Main_Memory at address [0x63F]
+Data: [0x3F]
+Block retrieved: [303132333435363738393A073C3D3E3F]
+Written to cache.
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? r
+What address would you like to read? 83
+Tag: [00]    Slot: [8]   Block: [3]
+Checking cache...
+Cache MISS
+Reading Main_Memory at address [0x83]
+Data: [0x83]
+Block retrieved: [808182838485868788898A8B8C8D8E8F]
+Written to cache.
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit? d
+====================================================================================
+================================ C A C H E =========================================
+Slot  Valid   Tag    Data
+ 0      1      0     00  01  02  03  04  05  06  07  08  09  0A  0B  0C  0D  0E  0F
+ 1      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 2      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 3      1      6     30  31  32  33  34  35  36  37  38  39  3A  07  3C  3D  3E  3F
+ 4      1      1     40  41  42  43  44  45  46  47  48  49  4A  4B  99  4D  4E  4F
+ 5      1      1     50  51  52  53  54  55  56  57  58  59  5A  5B  5C  5D  5E  5F
+ 6      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 7      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ 8      1      0     80  81  82  83  84  85  86  87  88  89  8A  8B  8C  8D  8E  8F
+ 9      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ A      1      3     A0  A1  A2  A3  A4  A5  A6  A7  A8  A9  AA  AB  AC  AD  AE  AF
+ B      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ C      1      4     C0  C1  C2  C3  C4  C5  C6  C7  C8  C9  CA  CB  CC  CD  CE  CF
+ D      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ E      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+ F      0      0     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+
+
+(R)ead, (W)rite, (D)isplay Cache, (Q)uit?

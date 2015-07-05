@@ -83,10 +83,8 @@ func checkCache(tag byte, slot byte, block byte) bool {
 	var line_tag = cache_line[TAG]
 	var line_valid = cache_line[VALID]
 
-	fmt.Printf("Requested Cache line contains slot[%X] tag[%X] \n", line_slot, line_tag)
-
 	if line_slot == slot && line_tag == tag && line_valid == 1 {
-		fmt.Printf("Cache line looks like: [%X] \n", cache_line[DATA_OFFSET:])
+		fmt.Printf("Cache line looks like: [%X] \n", cache_line[DATA_OFFSET:DATA_BOUNDARY])
 		return true
 	}
 
@@ -111,12 +109,11 @@ func readData() {
 	var block byte = byte(addr & 0x000F)
 	var slot byte = byte((addr & 0x00F0) >> 4)
 	var tag byte = byte(addr >> 8)
-	fmt.Printf("Data to read ==> Tag: [%2.2X]    Slot: [%X]   Block: [%X] \n", tag, slot, block)
+	fmt.Printf("Tag: [%2.2X]    Slot: [%X]   Block: [%X] \n", tag, slot, block)
 
 	if checkCache(tag, slot, block) {
 		// IN THE CACHE
 		fmt.Println("Cache HIT")
-		// TODO: read value out of cache ?
 	} else {
 		// NOT IN THE CACHE
 		fmt.Println("Cache MISS")
@@ -140,7 +137,6 @@ func writeData() {
 	if err_addr != nil {
 		log.Fatal(err_addr)
 	}
-	fmt.Println(addr_to_write)
 	// check the cache to see if we already have it
 	var addr = uint16(addr_to_write)
 	var block byte = byte(addr & 0x000F)
@@ -161,8 +157,7 @@ func writeData() {
 	if err_data != nil {
 		log.Fatal(err_data)
 	}
-	fmt.Println(data_to_write)
-	fmt.Printf("Data to write: [%2.2X] \n", data_to_write)
+	fmt.Printf("Data to write: [0x%2.2X] \n", data_to_write)
 	//////////////////////////////////////////////////////
 
 	if checkCache(tag, slot, block) {
@@ -214,10 +209,8 @@ func readAndCacheData(idx int64, tag byte, slot byte, block byte) {
 	// NOT IN THE CACHE
 	// get the data at that location
 	var mem byte = main_memory[idx]
-	fmt.Printf("Reading Main_Memory[%d] \n", idx)
-	fmt.Printf("Data: [%4.4X] \n", mem)
-
-	fmt.Printf("At that byte there is the value %2.2X \n", mem)
+	fmt.Printf("Reading Main_Memory at address [0x%2.2X] \n", idx)
+	fmt.Printf("Data: [0x%2.2X] \n", mem)
 
 	// read the entire data block
 	var addr_begin = idx - int64(block)
@@ -225,7 +218,7 @@ func readAndCacheData(idx int64, tag byte, slot byte, block byte) {
 	var data_block = make([]byte, 16)
 	data_block = main_memory[addr_begin:addr_end]
 
-	fmt.Printf("Data retrieved: %X \n", data_block[:])
+	fmt.Printf("Block retrieved: [%X] \n", data_block[:])
 
 	// write it to the cache
 	writeToCache(tag, slot, data_block)
@@ -236,8 +229,7 @@ func updateCache(slot byte, block byte, data_to_write int64) {
 	var cache_row = cache[slot_idx]
 
 	fmt.Printf("Cache line retrieved: [%X] \n", cache_row[DATA_OFFSET:DATA_BOUNDARY])
-	fmt.Printf("Cache block to write to (hex): [%X] \n", block)
-	fmt.Printf("Cache block to write to (int): [%d] \n", block)
+	fmt.Printf("Cache block # to write to (hex): [%X] \n", block)
 
 	var cache_block_to_write = DATA_OFFSET + uint16(block)
 	cache_row[cache_block_to_write] = byte(data_to_write)
@@ -251,11 +243,16 @@ func writeToCache(tag byte, slot byte, data_block []byte) {
 	cache_row[VALID] = 0x01
 	cache_row[TAG] = tag
 	copy(cache_row[DATA_OFFSET:], data_block[:])
+
+	fmt.Println("Written to cache.")
 }
 
 func writeToMainMemory(addr_to_write int64, data_to_write byte) {
-	// TODO: flush the whole 16byte block, or just the updated bytes ?
-	fmt.Printf("Main Memory Data (pre-flush): Address (int) [%d] Data (hex) [%X] \n", addr_to_write, main_memory[addr_to_write])
+	fmt.Println("Preparing to write to Main Memory...")
+	fmt.Printf("Dump Main Memory (pre-flush): Address [0x%2.2X] - Data [0x%X] \n", addr_to_write, main_memory[addr_to_write])
+
 	main_memory[addr_to_write] = data_to_write
-	fmt.Printf("Main Memory Data (post-flush): Address (int) [%d] Data (hex) [%X] \n", addr_to_write, main_memory[addr_to_write])
+
+	fmt.Println("Data written to Main Memory.")
+	fmt.Printf("Dump Main Memory (post-flush): Address [0x%2.2X] - Data [0x%X] \n", addr_to_write, main_memory[addr_to_write])
 }
